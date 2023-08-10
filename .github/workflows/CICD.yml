@@ -25,12 +25,12 @@ jobs:
         host: ${{secrets.VM_IP}}
         username: ${{secrets.USERNAME}}
         script: |
-          sudo npm install -g pm2
           cd /home/ec2-user/
           ls -a
           git clone https://github.com/Manan-Goradiya/Demo-App.git
           ls -a
           cd Demo-App
+          sudo npm install -g pm2
           pm2 start index.js
   
          
