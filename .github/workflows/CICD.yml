@@ -18,13 +18,6 @@ jobs:
         node-version: [12.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm run start --if-present
     - name: SSH Remote Commands
       uses: appleboy/ssh-action@v0.1.2
       with:
@@ -32,10 +25,12 @@ jobs:
         host: ${{secrets.VM_IP}}
         username: ${{secrets.USERNAME}}
         script: |
+          sudo npm install -g pm2
           cd /home/ec2-user/
           ls -a
           git clone https://github.com/Manan-Goradiya/Demo-App.git
           ls -a
           cd Demo-App
-          node index.js
+          pm2 start index.js
+  
          
