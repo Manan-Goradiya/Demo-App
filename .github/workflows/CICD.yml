@@ -37,4 +37,5 @@ jobs:
           git clone https://github.com/Manan-Goradiya/Demo-App.git
           ls -a
           cd Demo-App
+          node index.js
          
