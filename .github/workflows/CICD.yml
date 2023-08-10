@@ -34,7 +34,4 @@ jobs:
         script: |
           cd /home/ec2-user/
           ls
-          git clone https://github.com/Manan-Goradiya/Demo-App.git
-          ls
-          cd Demo-App
-          node index.js
+         
