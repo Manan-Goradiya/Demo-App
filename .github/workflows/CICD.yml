@@ -1,0 +1,38 @@
+
+name: Node.js CICD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - run: npm run start --if-present
+    - name: SSH Remote Commands
+      uses: appleboy/ssh-action@v0.1.2
+      with:
+        key: ${{secrets.SSH_KEY}}
+        host: ${{secrets.VM_IP}}
+        username: ${{secrets.USERNAME}}
+        script: |
+          cd /home/ec2-user/
+          git clone https://github.com/Manan-Goradiya/Demo-App.git
+          cd Demo-App
+          node index.js
