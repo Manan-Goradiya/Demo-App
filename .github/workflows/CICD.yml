@@ -29,6 +29,6 @@ jobs:
           git clone https://github.com/Manan-Goradiya/Demo-App.git
           cd Demo-App
           sudo npm install -g pm2
-          pm2 start index.js
+          pm2 start index.js -f
   
          
