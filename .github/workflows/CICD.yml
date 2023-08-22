@@ -1,5 +1,5 @@
 
-name: Node.js CICD
+name: SSL_Status
 
 on:
   push:
@@ -13,22 +13,37 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [12.x]
-
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
     - name: SSH Remote Commands
-      uses: appleboy/ssh-action@v0.1.2
-      with:
-        key: ${{secrets.SSH_KEY}}
-        host: ${{secrets.VM_IP}}
-        username: ${{secrets.USERNAME}}
-        script: |
-          cd /home/ec2-user/
-          git clone https://github.com/Manan-Goradiya/Demo-App.git
-          cd Demo-App
-          sudo npm install -g pm2
-          pm2 start index.js -f
-  
+      
+      run: |
+            ls
+            cat domain.txt | while read -r doamin1; do
+            #!/bin/bash
+            
+            port="443"
+            
+            # Get the certificate's "Not Before" and "Not After" dates
+            dates=$(openssl s_client -connect "$domain1:$port" 2>/dev/null | openssl x509 -noout -dates)
+            
+            # Extract "Not Before" and "Not After" dates
+            not_before=$(echo "$dates" | grep "notBefore" | cut -d "=" -f 2)
+            not_after=$(echo "$dates" | grep "notAfter" | cut -d "=" -f 2)
+            
+            # Convert dates to Unix timestamps for comparison
+            not_before_unix=$(date -d "$not_before" +%s)
+            not_after_unix=$(date -d "$not_after" +%s)
+            current_unix=$(date +%s)
+            
+            # Check if the current date is within the validity range
+            if [ "$current_unix" -ge "$not_before_unix" ] && [ "$current_unix" -le "$not_after_unix" ]; then
+                echo "Certificate for $domain is valid."
+            else
+                echo "Certificate for $domain is expired or not yet valid."
+            fi
+
+            done
          
